@@ -60,6 +60,34 @@ const ShoppingList: React.FC = () => {
     setIsSaved(true);
   };
 
+  const handleExport = () => {
+    const csvContent = [
+      ['ID', 'Name', 'Quantity', 'Unit', 'Price', 'Purchased'],
+      ...items.map(item => [
+        item.id,
+        item.name,
+        item.quantity,
+        item.unit,
+        item.price,
+        item.purchased,
+      ]),
+    ]
+      .map(e => e.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.href) {
+      URL.revokeObjectURL(link.href);
+    }
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', 'shopping-list.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -118,6 +146,7 @@ const ShoppingList: React.FC = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="card-title mb-0">Shopping List</h1>
                 <div>
+                  <button className="btn btn-info me-2" onClick={handleExport}>Export</button>
                   <button className={`btn ${isSaved ? 'btn-success' : 'btn-primary'} me-2`} onClick={handleSave}>
                     {isSaved ? 'Saved' : 'Save'}
                   </button>

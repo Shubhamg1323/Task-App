@@ -57,6 +57,27 @@ const TodoList: React.FC = () => {
     setIsSaved(true);
   };
 
+  const handleExport = () => {
+    const csvContent = [
+      ['ID', 'Task', 'Time', 'Completed'],
+      ...tasks.map(task => [task.id, task.text, task.time, task.completed]),
+    ]
+      .map(e => e.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.href) {
+      URL.revokeObjectURL(link.href);
+    }
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', 'todo-list.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -124,6 +145,7 @@ const TodoList: React.FC = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="card-title mb-0">To-Do List</h1>
                 <div>
+                  <button className="btn btn-info me-2" onClick={handleExport}>Export</button>
                   <button className={`btn ${isSaved ? 'btn-success' : 'btn-primary'} me-2`} onClick={handleSave}>
                     {isSaved ? 'Saved' : 'Save'}
                   </button>
