@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../App.css';
@@ -32,6 +32,25 @@ const ExpenseList: React.FC = () => {
   const [itemAmount, setItemAmount] = useState(0);
   const [itemCategory, setItemCategory] = useState('');
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    const savedItems = localStorage.getItem('expense-list-items');
+    if (savedItems) {
+      setItems(JSON.parse(savedItems));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isSaved) {
+      setIsSaved(false);
+    }
+  }, [items]);
+
+  const handleSave = () => {
+    localStorage.setItem('expense-list-items', JSON.stringify(items));
+    setIsSaved(true);
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -89,12 +108,18 @@ const ExpenseList: React.FC = () => {
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h1 className="card-title mb-0">Expense List</h1>
-                <input
-                  type="date"
-                  className="form-control w-auto"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
+                <div>
+                  <button className={`btn ${isSaved ? 'btn-success' : 'btn-primary'} me-2`} onClick={handleSave}>
+                    {isSaved ? 'Saved' : 'Save'}
+                  </button>
+                  <button className="btn btn-danger me-2" onClick={() => setItems([])}>Clear</button>
+                  <input
+                    type="date"
+                    className="form-control w-auto d-inline-block"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="row g-2 mb-3">
                 <div className="col-md-5">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../App.css';
@@ -29,6 +29,17 @@ const MonthlyPlanningList: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [eventName, setEventName] = useState('');
   const [eventDate, setEventDate] = useState(new Date().toISOString().slice(0, 10));
+
+  useEffect(() => {
+    const savedEvents = localStorage.getItem('monthly-planning-events');
+    if (savedEvents) {
+      setEvents(JSON.parse(savedEvents));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('monthly-planning-events', JSON.stringify(events));
+  }, [events]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -81,7 +92,10 @@ const MonthlyPlanningList: React.FC = () => {
         <div className="col-md-8">
           <div className="card">
             <div className="card-body">
-              <h1 className="card-title text-center mb-4">Monthly Planning</h1>
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <h1 className="card-title mb-0">Monthly Planning</h1>
+                <button className="btn btn-danger" onClick={() => setEvents([])}>Clear</button>
+              </div>
               <div className="row g-2 mb-3">
                 <div className="col-md-6">
                   <input

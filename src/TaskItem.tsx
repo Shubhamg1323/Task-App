@@ -6,6 +6,7 @@ interface Task {
   id: string;
   text: string;
   completed: boolean;
+  time: string;
 }
 
 interface TaskItemProps {
@@ -74,6 +75,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
           >
             {task.text}
           </span>
+          {task.time && <span className="me-2 text-muted">{task.time}</span>}
           <button
             className={`btn btn-sm me-2 ${task.completed ? 'btn-success' : 'btn-warning'}`}
             onClick={() => onToggle(task.id)}

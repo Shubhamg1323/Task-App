@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../App.css';
@@ -107,6 +107,23 @@ const GymWorkoutList: React.FC = () => {
   const [selectedWorkout, setSelectedWorkout] = useState<Workout>(workoutData['Chest']);
   const [exercises, setExercises] = useState<Exercise[]>(selectedWorkout.exercises);
 
+  useEffect(() => {
+    const savedData = localStorage.getItem(`gym-workout-${selectedDate}`);
+    if (savedData) {
+      const { workout, exercises } = JSON.parse(savedData);
+      setSelectedWorkout(workout);
+      setExercises(exercises);
+    } else {
+      const workout = workoutData['Chest'];
+      setSelectedWorkout(workout);
+      setExercises(workout.exercises.map(ex => ({...ex, completed: false})));
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    localStorage.setItem(`gym-workout-${selectedDate}`, JSON.stringify({ workout: selectedWorkout, exercises }));
+  }, [selectedDate, selectedWorkout, exercises]);
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = new Date(e.target.value);
     setSelectedDate(e.target.value);
@@ -129,7 +146,10 @@ const GymWorkoutList: React.FC = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Gym Workout List</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="text-center mb-0">Gym Workout List</h1>
+        <button className="btn btn-danger" onClick={() => setExercises(selectedWorkout.exercises.map(ex => ({...ex, completed: false})))}>Clear</button>
+      </div>
       <div className="row mb-3">
         <div className="col-md-4">
           <label htmlFor="date-select" className="form-label">Date:</label>

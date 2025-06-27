@@ -8,6 +8,7 @@ interface Task {
   id: string;
   text: string;
   completed: boolean;
+  time: string;
 }
 
 interface SortableTaskItemProps {
