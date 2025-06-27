@@ -52,6 +52,12 @@ const ExpenseList: React.FC = () => {
     setIsSaved(true);
   };
 
+  const handleClear = () => {
+    setItems([]);
+    localStorage.setItem('expense-list-items', JSON.stringify([]));
+    setIsSaved(true);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -112,7 +118,7 @@ const ExpenseList: React.FC = () => {
                   <button className={`btn ${isSaved ? 'btn-success' : 'btn-primary'} me-2`} onClick={handleSave}>
                     {isSaved ? 'Saved' : 'Save'}
                   </button>
-                  <button className="btn btn-danger me-2" onClick={() => setItems([])}>Clear</button>
+                  <button className="btn btn-danger me-2" onClick={handleClear}>Clear</button>
                   <input
                     type="date"
                     className="form-control w-auto d-inline-block"
