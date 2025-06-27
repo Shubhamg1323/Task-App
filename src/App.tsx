@@ -1,25 +1,25 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MainPage from './pages/MainPage';
+import TodoList from './pages/TodoList';
+import ShoppingList from './pages/ShoppingList';
+import ExpenseList from './pages/ExpenseList';
+import MonthlyPlanningList from './pages/MonthlyPlanningList';
+import GymWorkoutList from './pages/GymWorkoutList';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/todo" element={<TodoList />} />
+        <Route path="/shopping" element={<ShoppingList />} />
+        <Route path="/expense" element={<ExpenseList />} />
+        <Route path="/planning" element={<MonthlyPlanningList />} />
+        <Route path="/gym" element={<GymWorkoutList />} />
+      </Routes>
+    </Router>
   );
 }
 
